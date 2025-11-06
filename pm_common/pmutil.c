@@ -8,7 +8,7 @@
 #include "pmutil.h"
 #include "pminternal.h"
 
-#if defined(WIN32) | defined(ANDROID)
+#if defined(WIN32) || defined(__ANDROID__)
 #define bzero(addr, siz) memset(addr, 0, siz)
 #endif
 
