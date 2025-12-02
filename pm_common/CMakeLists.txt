@@ -12,14 +12,21 @@
 # Support alternative name for static libraries to avoid confusion.
 # (In particular, Xcode has automatically converted portmidi.a to
 # portmidi.dylib without warning, so using portmidi-static.a eliminates
-# this possibility, but default for all libs is "portmidi"):
+# this possibility, but default for all libs is "portmidi").
+#     Note about CMake scoping: We get a *copy* of parent variables
+# when pm_common is loaded, so set() will only set the local copy, and
+# set(... PARENT_SCOPE) will *only* set the parent copy. You need to
+# set twice to use a new value both locally and in the parent.
+#
 set(PM_STATIC_LIB_NAME "portmidi" CACHE STRING 
     "For static builds, the PortMidi library name, e.g. portmidi-static.
      Default is portmidi")
-set(PM_ACTUAL_LIB_NAME "portmidi" PARENT_SCOPE)
+set(PM_ACTUAL_LIB_NAME "portmidi")
 if(NOT BUILD_SHARED_LIBS)
-  set(PM_ACTUAL_LIB_NAME ${PM_STATIC_LIB_NAME} PARENT_SCOPE)
+  set(PM_ACTUAL_LIB_NAME ${PM_STATIC_LIB_NAME})
 endif()
+# copy local variable to parent's copy of the variable:
+set(PM_ACTUAL_LIB_NAME ${PM_ACTUAL_LIB_NAME} PARENT_SCOPE)
 
 # set the build directory for libportmidi.a to be in portmidi, not in 
 #    portmidi/pm_common. Must be done here BEFORE add_library below.
